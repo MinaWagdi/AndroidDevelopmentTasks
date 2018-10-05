@@ -1,0 +1,22 @@
+<resources>
+
+    <string name="app_name">Task1_CurrencyConverter</string>
+    <string name="ToTextView">To</string>
+    <string name="FromTextView">From</string>
+    <string name="ValueTextView">Value</string>
+    <string name="ValueEditText">Enter a value</string>
+    <string name="ConvertBtn">Convert</string>
+    <string name="ResultTextView">Result</string>
+    <string-array name="fromSpinner">
+        <item>EGP</item>
+        <item>Dollars</item>
+    </string-array>
+    <string name="fromSpinnerText">From</string>
+    <string-array name="toSpinner">
+        <item>EGP</item>
+        <item>Dollars</item>
+    </string-array>
+    <string name="toSpinnerText">To</string>
+
+
+</resources>
