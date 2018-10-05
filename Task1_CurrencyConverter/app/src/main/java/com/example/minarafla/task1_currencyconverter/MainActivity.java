@@ -47,7 +47,7 @@ public class MainActivity extends AppCompatActivity {
         }
         else{
             if(toCurrency.equalsIgnoreCase("EGP")){
-                result=value*10;
+                result=value/18;
             }
             else{
                 result=value;
