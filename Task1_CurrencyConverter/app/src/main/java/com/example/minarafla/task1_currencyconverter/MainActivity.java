@@ -1,5 +1,6 @@
 package com.example.minarafla.task1_currencyconverter;
 
+import android.os.PersistableBundle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -13,10 +14,14 @@ import android.util.Log;
 public class MainActivity extends AppCompatActivity {
 
     private String tag = "MINAS_TAG";
+    TextView resultView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        resultView = (TextView) findViewById(R.id.textView6);
 
         final Button button = findViewById(R.id.button);
         button.setOnClickListener(new View.OnClickListener() {
@@ -24,6 +29,26 @@ public class MainActivity extends AppCompatActivity {
                 Convert();
             }
         });
+        try {
+            if (savedInstanceState != null) {
+                String retrievedresult = savedInstanceState.getString("resultViewGetValue");
+                resultView.setText(retrievedresult);
+            }
+        }catch(Exception ex){
+            Log.i(tag,"exception when trying to retrieve the saved State is "+ex.getClass());
+        }
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        try {
+            outState.putString("resultViewGetValue", resultView.getText().toString());
+        }catch (Exception ex){
+            Log.i(tag,"exception when trying to save the state is "+ex.getClass());
+        }
+
+
     }
 
     public void Convert(){
@@ -40,29 +65,32 @@ public class MainActivity extends AppCompatActivity {
             Spinner toSpinner = (Spinner) findViewById(R.id.spinner3);
             String toCurrency = toSpinner.getSelectedItem().toString();
 
-            TextView resultView = (TextView) findViewById(R.id.textView6);
-            resultView.setText("" + result);
+            //resultView.setText("" + result);
 
             if (fromCurrency.equalsIgnoreCase("EGP")) {
                 if (toCurrency.equalsIgnoreCase("Dollars")) {
                     result = value * 17.6;
+                    resultView.setText("" + result);
                 } else {
                     Toast.makeText(getApplicationContext(),"The 2 currencies are the same",Toast.LENGTH_LONG).show();
                 }
             } else {
                 if (toCurrency.equalsIgnoreCase("EGP")) {
                     result = value / 17.6;
+                    resultView.setText("" + result);
                 } else {
                     Toast.makeText(getApplicationContext(),"The 2 currencies are the same",Toast.LENGTH_LONG).show();
                 }
 
             }
-            resultView.setText("" + result);
+
         }
         catch (java.lang.NumberFormatException ex) {
             Log.i(tag,"exception is "+ex.getClass());
             Toast.makeText(getApplicationContext(),"Please Enter a value",Toast.LENGTH_LONG).show();
         }
+
+
 
 
 
