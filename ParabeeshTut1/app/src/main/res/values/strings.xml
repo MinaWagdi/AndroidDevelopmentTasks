@@ -1,8 +1,0 @@
-<resources>
-    <string name="app_name">ParabeeshTut1</string>
-    <string name="welcome_message">Welcome to Message Activity</string>
-    <string name="EnterMessageHint">EnterMessage</string>
-    <string name="FinalActivityMessage">Welcome to FinalActivity</string>
-    <string name="final_activity_button">Open Final Activity</string>
-
-</resources>
