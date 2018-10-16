@@ -5,8 +5,8 @@
       <filter>
         <option name="logLevel" value="info" />
         <option name="logMessagePattern" value="" />
-        <option name="logTagPattern" value="MINASTAG" />
-        <option name="name" value="MINASTAG" />
+        <option name="logTagPattern" value="WINNER" />
+        <option name="name" value="WINNER" />
         <option name="packageNamePattern" value="" />
         <option name="pid" value="" />
       </filter>
@@ -18,7 +18,7 @@
     </shared>
   </component>
   <component name="AndroidLogFilters">
-    <option name="TOOL_WINDOW_CONFIGURED_FILTER" value="MINASTAG" />
+    <option name="TOOL_WINDOW_CONFIGURED_FILTER" value="WINNER" />
   </component>
   <component name="CMakeSettings">
     <configurations>
@@ -51,12 +51,11 @@
       <file leaf-file-name="MainActivity.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/java/com/example/minarafla/task2_matchingappgame/MainActivity.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="300">
-              <caret line="149" column="28" selection-start-line="149" selection-start-column="28" selection-end-line="149" selection-end-column="28" />
+            <state relative-caret-position="312">
+              <caret line="122" column="63" selection-start-line="122" selection-start-column="63" selection-end-line="122" selection-end-column="63" />
               <folding>
                 <element signature="imports" expanded="true" />
-                <element signature="method#getArrayImages#0;class#MainActivity#0" />
-                <element signature="method#InitializeAnimalsPicsArrayList#0;class#MainActivity#0" />
+                <element signature="method#ShowClickedImage#0;class#MainActivity#0" />
               </folding>
             </state>
           </provider>
@@ -89,6 +88,7 @@
   <component name="FindInProjectRecents">
     <findStrings>
       <find>Log</find>
+      <find>HideImage</find>
     </findStrings>
   </component>
   <component name="GradleLocalSettings">
@@ -2561,11 +2561,11 @@
       <window_info anchor="bottom" id="Run" order="2" />
       <window_info anchor="bottom" id="Version Control" show_stripe_button="false" />
       <window_info anchor="bottom" id="Terminal" />
-      <window_info active="true" anchor="bottom" id="Logcat" visible="true" weight="0.2516129" />
+      <window_info anchor="bottom" id="Logcat" visible="true" weight="0.2516129" />
       <window_info id="Captures" order="2" weight="0.25" />
       <window_info id="Capture Tool" />
       <window_info id="Designer" />
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.16147488" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.16147488" />
       <window_info anchor="bottom" id="Build" weight="0.22150537" />
       <window_info anchor="bottom" id="Find" order="1" weight="0.32903227" />
       <window_info anchor="right" id="Gradle" />
@@ -2587,14 +2587,7 @@
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/com/example/minarafla/task2_matchingappgame/MainActivity.java</url>
-          <line>96</line>
-          <properties />
-        </line-breakpoint>
-      </breakpoints>
-      <option name="time" value="1" />
+      <option name="time" value="2" />
     </breakpoint-manager>
   </component>
   <component name="editorHistoryManager">
@@ -2618,12 +2611,11 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/example/minarafla/task2_matchingappgame/MainActivity.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="300">
-          <caret line="149" column="28" selection-start-line="149" selection-start-column="28" selection-end-line="149" selection-end-column="28" />
+        <state relative-caret-position="312">
+          <caret line="122" column="63" selection-start-line="122" selection-start-column="63" selection-end-line="122" selection-end-column="63" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="method#getArrayImages#0;class#MainActivity#0" />
-            <element signature="method#InitializeAnimalsPicsArrayList#0;class#MainActivity#0" />
+            <element signature="method#ShowClickedImage#0;class#MainActivity#0" />
           </folding>
         </state>
       </provider>

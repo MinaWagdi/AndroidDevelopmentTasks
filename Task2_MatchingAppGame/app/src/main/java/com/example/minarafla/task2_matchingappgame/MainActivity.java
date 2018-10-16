@@ -31,6 +31,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     int firstImageClickedID;
     int secondImageClickedID;
 
+    //in order to know when the same images are opened
+    String picture1Resource;
+    String picture2Resource;
+
+    int score;
+
     int counter=0;
 
 
@@ -56,12 +62,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         im6.setOnClickListener(this);
         im7.setOnClickListener(this);
         im8.setOnClickListener(this);
-
-
-
-
     }
-
 
     void ReferenceImageViews() {
         im1 = findViewById(R.id.image1);
@@ -86,9 +87,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     int[] getArrayImages() {
-        int imageRes[] = {R.drawable.chicken1, R.drawable.chicken2, R.drawable.dog1, R.drawable.dog2,
-                R.drawable.monkey1, R.drawable.monkey2, R.drawable.zibra1, R.drawable.zibra2};
-
+        int imageRes[] = {R.drawable.chicken1, R.drawable.chicken1, R.drawable.dog1, R.drawable.dog1,
+                R.drawable.monkey1, R.drawable.monkey1, R.drawable.zibra1, R.drawable.zibra1};
         return imageRes;
     }
 
@@ -101,14 +101,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onClick(View v) {
+        int i;
         if(checkIfSameImageClicked(v)){
             return;
         }
         else if((firstClickFlag!=secondClickFlag)||(firstClickFlag==false && secondClickFlag==false)){
-            ShowClickedImage(v);
+            i=ShowClickedImage(v);
             if(firstClickFlag==true&&secondClickFlag==false) {
                 secondImageClickedID=v.getId();
                 secondClickFlag = true;
+                picture2Resource=AnimalsPics.get(i).toString();
+                if(imagedMatched()){
+                    HideMatchedImages(picture1Resource);
+                    //HideMatchedImages(picture2Resource);
+                    Log.i("WINNER","GREAT");
+                }
                 Log.i("MINASTAG",counter+" first click flag is "+firstClickFlag+" and second click flag is "+secondClickFlag);
                 counter++;
             }
@@ -116,6 +123,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             else if(firstClickFlag==false && secondClickFlag==false){
                 firstImageClickedID=v.getId();
                 firstClickFlag=true;
+                picture1Resource=AnimalsPics.get(i).toString();
                 Log.i("MINASTAG",counter+" first click flag is "+firstClickFlag+" and second click flag is "+secondClickFlag);
                 counter++;
             }
@@ -123,9 +131,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         else if(firstClickFlag==true && secondClickFlag==true){
             HideImage(firstImageClickedID);
             HideImage(secondImageClickedID);
-            ShowClickedImage(v);
+            i=ShowClickedImage(v);
             secondClickFlag = false;
+            firstClickFlag=true;
             firstImageClickedID=v.getId();
+            picture1Resource=AnimalsPics.get(i).toString();
             Log.i("MINASTAG",counter+" first click flag is "+firstClickFlag+" and second click flag is "+secondClickFlag);
             counter++;
         }
@@ -154,6 +164,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 firstClickFlag = true;
                 secondClickFlag = false;
                 firstImageClickedID = secondImageClickedID;
+                picture1Resource=picture2Resource;
                 Log.i("MINASTAG", counter + " first click flag is " + firstClickFlag + " and second click flag is " + secondClickFlag);
                 counter++;
                 return true;
@@ -162,65 +173,120 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         return false;
     }
 
-
-
-    public void ShowClickedImage(View v){
+    public int ShowClickedImage(View v){
+        int image_num=0;
         switch (v.getId()) {
             case R.id.image1:
                 im1.setImageResource(AnimalsPics.get(0));
+                image_num=0;
+                Log.i("MINASTAG",""+AnimalsPics.get(0).toString());
                 break;
             case R.id.image2:
                 im2.setImageResource(AnimalsPics.get(1));
+                image_num=1;
+                Log.i("MINASTAG",""+AnimalsPics.get(1).toString());
                 break;
             case R.id.image3:
                 im3.setImageResource(AnimalsPics.get(2));
+                image_num=2;
+                Log.i("MINASTAG",""+AnimalsPics.get(2).toString());
                 break;
             case R.id.image4:
                 im4.setImageResource(AnimalsPics.get(3));
+                image_num=3;
+                Log.i("MINASTAG",""+AnimalsPics.get(3).toString());
                 break;
             case R.id.image5:
                 im5.setImageResource(AnimalsPics.get(4));
+                image_num=4;
+                Log.i("MINASTAG",""+AnimalsPics.get(4).toString());
                 break;
             case R.id.image6:
                 im6.setImageResource(AnimalsPics.get(5));
+                image_num=5;
+                Log.i("MINASTAG",""+AnimalsPics.get(5).toString());
                 break;
             case R.id.image7:
                 im7.setImageResource(AnimalsPics.get(6));
+                image_num=6;
+                Log.i("MINASTAG",""+AnimalsPics.get(6).toString());
                 break;
             case R.id.image8:
                 im8.setImageResource(AnimalsPics.get(7));
+                image_num=7;
+                Log.i("MINASTAG",""+AnimalsPics.get(7).toString());
                 break;
         }
+        return image_num;
+    }
+
+    public void HideMatchedImages(String res){
+        if(AnimalsPics.get(0).toString().equalsIgnoreCase(res)){
+            im1.setVisibility(View.INVISIBLE);
+        }
+        if(AnimalsPics.get(1).toString().equalsIgnoreCase(res)){
+            im2.setVisibility(View.INVISIBLE);
+        }
+        if(AnimalsPics.get(2).toString().equalsIgnoreCase(res)){
+            im3.setVisibility(View.INVISIBLE);
+        }
+        if(AnimalsPics.get(3).toString().equalsIgnoreCase(res)){
+            im4.setVisibility(View.INVISIBLE);
+        }
+        if(AnimalsPics.get(4).toString().equalsIgnoreCase(res)){
+            im5.setVisibility(View.INVISIBLE);
+        }
+        if(AnimalsPics.get(5).toString().equalsIgnoreCase(res)){
+            im6.setVisibility(View.INVISIBLE);
+        }
+        if(AnimalsPics.get(6).toString().equalsIgnoreCase(res)){
+            im7.setVisibility(View.INVISIBLE);
+        }
+        if(AnimalsPics.get(7).toString().equalsIgnoreCase(res)){
+            im8.setVisibility(View.INVISIBLE);
+        }
+
+
     }
 
     public void HideImage(int imageClicked){
-        switch (imageClicked) {
-            case R.id.image1:
-                im1.setImageResource(R.drawable.card_back);
-                break;
-            case R.id.image2:
-                im2.setImageResource(R.drawable.card_back);
-                break;
-            case R.id.image3:
-                im3.setImageResource(R.drawable.card_back);
-                break;
-            case R.id.image4:
-                im4.setImageResource(R.drawable.card_back);
-                break;
-            case R.id.image5:
-                im5.setImageResource(R.drawable.card_back);
-                break;
-            case R.id.image6:
-                im6.setImageResource(R.drawable.card_back);
-                break;
-            case R.id.image7:
-                im7.setImageResource(R.drawable.card_back);
-                break;
-            case R.id.image8:
-                im8.setImageResource(R.drawable.card_back);
-                break;
+            switch (imageClicked) {
+                case R.id.image1:
+                    im1.setImageResource(R.drawable.card_back);
+                    break;
+                case R.id.image2:
+                    im2.setImageResource(R.drawable.card_back);
+                    break;
+                case R.id.image3:
+                    im3.setImageResource(R.drawable.card_back);
+                    break;
+                case R.id.image4:
+                    im4.setImageResource(R.drawable.card_back);
+                    break;
+                case R.id.image5:
+                    im5.setImageResource(R.drawable.card_back);
+                    break;
+                case R.id.image6:
+                    im6.setImageResource(R.drawable.card_back);
+                    break;
+                case R.id.image7:
+                    im7.setImageResource(R.drawable.card_back);
+                    break;
+                case R.id.image8:
+                    im8.setImageResource(R.drawable.card_back);
+                    break;
+            }
         }
+
+
+    public boolean imagedMatched(){
+        Log.i("WINNER",""+picture1Resource.toLowerCase().toString());
+        Log.i("WINNER",""+picture2Resource.toLowerCase().toString());
+        if(picture1Resource.toString().equalsIgnoreCase(picture2Resource.toString()))
+            return true;
+        return false;
     }
+
 
 
     /*What are the exceptions that can be encountered ?
