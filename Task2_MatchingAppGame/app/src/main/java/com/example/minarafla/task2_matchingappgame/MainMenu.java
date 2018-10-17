@@ -27,16 +27,16 @@ public class MainMenu extends AppCompatActivity {
         myDb = new DBAdapter(this);
         myDb.open();
 
-        ring= MediaPlayer.create(MainMenu.this,R.raw.gedo_ali);
-        ring.start();
+//        ring= MediaPlayer.create(MainMenu.this,R.raw.gedo_ali);
+//        ring.start();
 
-        long d = insertData(" "," ");
+        //long d = insertData(" "," ");
 
         StartButton=findViewById(R.id.StartBtn);
         StartButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ring.stop();
+                //ring.stop();
                 Intent intent = new Intent(getApplicationContext(),MainActivity.class);
                 startActivity(intent);
             }
@@ -46,13 +46,17 @@ public class MainMenu extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 try {
-                    ring.stop();
+                    //ring.stop();
                     Cursor res = getAllData();
                     if (res.getCount() == 0) {
                         showMessage("Error", "No data found");
                         return;
                     } else {
                         StringBuffer buffer = new StringBuffer();
+                        buffer.append("ID : " + res.getString(DBAdapter.COL_ROWID) + "\n");
+                        Log.i("READs","ID "+res.getString(DBAdapter.COL_ROWID));
+                        buffer.append("Date : " + res.getString(DBAdapter.COL_DATE) + "\n");
+                        buffer.append("Score : " + res.getString(DBAdapter.COL_SCORE) + "\n");
                         while (res.moveToNext()) {
                             buffer.append("ID : " + res.getString(DBAdapter.COL_ROWID) + "\n");
                             Log.i("READs","ID "+res.getString(DBAdapter.COL_ROWID));
@@ -101,5 +105,13 @@ public class MainMenu extends AppCompatActivity {
         else{
             return 1;
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+//        ring.release();
+//        ring= MediaPlayer.create(MainMenu.this,R.raw.gedo_ali);
+//        ring.start();
     }
 }

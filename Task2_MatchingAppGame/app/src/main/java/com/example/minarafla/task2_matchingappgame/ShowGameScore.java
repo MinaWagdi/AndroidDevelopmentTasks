@@ -24,8 +24,8 @@ public class ShowGameScore extends AppCompatActivity {
         Intent i = getIntent();
         String score=i.getStringExtra("score");
 
-        ring= MediaPlayer.create(ShowGameScore.this,R.raw.gedo_ali);
-        ring.start();
+//        ring= MediaPlayer.create(ShowGameScore.this,R.raw.gedo_ali);
+//        ring.start();
 
 
         textView = findViewById(R.id.textView4);
@@ -36,7 +36,7 @@ public class ShowGameScore extends AppCompatActivity {
         ReplayButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ring.stop();
+                //ring.stop();
                 Intent i= new Intent(getApplicationContext(),MainActivity.class);
                 startActivity(i);
 
@@ -46,7 +46,7 @@ public class ShowGameScore extends AppCompatActivity {
         MainMenuButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ring.stop();
+                //ring.stop();
                 Intent i= new Intent(getApplicationContext(),MainMenu.class);
                 startActivity(i);
 
