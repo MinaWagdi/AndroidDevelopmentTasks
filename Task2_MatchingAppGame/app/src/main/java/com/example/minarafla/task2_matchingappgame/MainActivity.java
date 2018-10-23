@@ -407,6 +407,36 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 //            return 1;
 //        }
 //    }
+
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        try {
+            ring.stop();
+        }catch(Exception e){
+            Log.i("EXCEPTION","onDestroyException");
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        try {
+            ring.stop();
+        }catch(Exception e){
+            Log.i("EXCEPTION","onPauseException");
+        }
+    }
+    @Override
+    protected void onResume() {
+        super.onPause();
+        try {
+            ring.start();
+        }catch(Exception e){
+            Log.i("EXCEPTION","onResumeException");
+        }
+    }
 }
 
 
