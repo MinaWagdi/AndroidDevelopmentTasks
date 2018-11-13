@@ -40,22 +40,23 @@ public class AddEvent extends AppCompatActivity {
 
         Log.i("Mina","passed");
         ContentResolver cr = getContentResolver();
-        ContentValues contentValues = new ContentValues();
+//        ContentValues contentValues = new ContentValues();
         Log.i("Mina","passed2");
         Calendar beginTime = Calendar.getInstance();
-        beginTime.set(2018, 12, 04, 9, 30);
+        beginTime.set(2018, 11, 04, 9, 30);
 
         Calendar endTime = Calendar.getInstance();
-        endTime.set(2018, 12, 04, 7, 35);
+        endTime.set(2018, 11, 04, 7, 35);
         Log.i("Mina","passed3");
         ContentValues values = new ContentValues();
+        values.put(CalendarContract.Events.CALENDAR_ID, 1);
+        values.put(CalendarContract.Events.TITLE, "Tech Stores");
         values.put(CalendarContract.Events.DTSTART, beginTime.getTimeInMillis());
         values.put(CalendarContract.Events.DTEND, endTime.getTimeInMillis());
-        values.put(CalendarContract.Events.TITLE, "Tech Stores");
         values.put(CalendarContract.Events.DESCRIPTION, "Successful Startups");
-        values.put(CalendarContract.Events.CALENDAR_ID, 3);
         values.put(CalendarContract.Events.EVENT_LOCATION, "London");
         values.put(CalendarContract.Events.EVENT_TIMEZONE,Calendar.getInstance().getTimeZone().getID());
+
         Log.i("Mina","passed4");
         try {
             cr.insert(CalendarContract.Events.CONTENT_URI, values);
@@ -64,5 +65,15 @@ public class AddEvent extends AppCompatActivity {
         }
         Log.i("Mina","passed5");
         return;
+
+//        Calendar cal = Calendar.getInstance();
+//        Intent intent = new Intent(Intent.ACTION_EDIT);
+//        intent.setType("vnd.android.cursor.item/event");
+//        intent.putExtra("beginTime", cal.getTimeInMillis());
+//        intent.putExtra("allDay", true);
+//        intent.putExtra("rrule", "FREQ=YEARLY");
+//        intent.putExtra("endTime", cal.getTimeInMillis()+60*60*1000);
+//        intent.putExtra("title", "A Test Event from android app");
+//        startActivity(intent);
     }
 }
