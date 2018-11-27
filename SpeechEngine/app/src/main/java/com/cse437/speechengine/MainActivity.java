@@ -28,7 +28,7 @@ import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
 
-    DBAdapter myDb;
+    public static DBAdapter myDb;
     String Records;
     TextView testText;
     ImageView mic_imgview;
@@ -97,19 +97,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onClick_AddRecord(String [] record) {
-
         long newId = myDb.insertRow(record[0],record[1],record[2],record[3],record[4],record[5]);
-
-        // Query for the record we just added to confirm.
-        // Use the ID:
-//        Cursor cursor = myDb.getRow(newId);
-//        displayRecordSet(cursor);
-        // [TO_DO_B2]
-        // Confirm that data is written correctly by reading it back and comparing it with the original data then display a toast message to confirm the transaction.
-        // [TO_DO_B3]
-        // Update the list view
     }
+
     public void getSpeech(){
+        Toast.makeText(this, "Please say the event name, then the day, Month, the day number, year, the time respectively", Toast.LENGTH_SHORT).show();
         testText.setText("Startinggg :)) ");
         Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
         intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
@@ -214,7 +206,11 @@ public class MainActivity extends AppCompatActivity {
 
 
     public void AccessDBAndQuery(){
-        onClick_DisplayRecords();
+        //onClick_DisplayRecords();
+
+        Intent intent = new Intent(this,Events.class);
+        intent.putExtra("event_details",""+EventString);
+        startActivity(intent);
 
     }
 
@@ -253,8 +249,7 @@ public class MainActivity extends AppCompatActivity {
                         +", year" + year
                         +"\n";
 
-                // [TO_DO_B6]
-                // Create arraylist(s)? and use it(them) in the list view
+
             } while(cursor.moveToNext());
         }
 

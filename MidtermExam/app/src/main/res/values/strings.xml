@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">MidtermExam</string>
+    <string name="MidtermText">MidtermExam</string>
+    <string name="TempRadioTxt">Temperature</string>
+    <string name="ProximityRadioTxt">Proximity</string>
+    <string name="LightRadioTxt">Light</string>
+    <string name="PressureRadioTxt">Pressure</string>
+    <string name="ButtonText">Measure</string>
+
+    <string name="TempTitle">Temperature</string>
+    <string name="ProximityTitle">Proximity</string>
+    <string name="LightTitle">Light</string>
+    <string name="PressureTitle">Pressure</string>
+
+</resources>
