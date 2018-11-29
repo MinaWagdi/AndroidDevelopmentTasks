@@ -2,8 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.cse437.speechengine">
 
-
-    <!--<uses-sdk android:minSdkVersion="14" />-->
+    <!-- <uses-sdk android:minSdkVersion="14" /> -->
     <uses-permission android:name="android.permission.READ_CALENDAR" />
     <uses-permission android:name="android.permission.WRITE_CALENDAR" />
 
@@ -21,7 +20,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".AddEvent"></activity>
+        <activity android:name=".AddEvent" />
+        <activity android:name=".Events"></activity>
     </application>
 
 </manifest>

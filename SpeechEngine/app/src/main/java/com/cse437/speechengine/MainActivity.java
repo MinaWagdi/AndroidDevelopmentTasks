@@ -58,7 +58,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Log.i("Mina","In the main activity");
+        Log.i(TAG,"In the main activity");
 
         textView=findViewById(R.id.textView2);
         testText=findViewById(R.id.testText);
@@ -214,56 +214,6 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    public void onClick_DisplayRecords() {
-        Cursor cursor = myDb.getAllRows();
-        displayRecordSet(cursor);
-        testText.setText(Records);
-
-
-    }
-
-    // Display an entire recordset to the screen.
-    private void displayRecordSet(Cursor cursor) {
-
-        // populate the message from the cursor
-
-                        // Reset cursor to start, checking to see if there's data:
-                if (cursor.moveToFirst()) {
-                    do {
-                        // Process the data:
-                        int id = cursor.getInt(DBAdapter.COL_ROWID);
-                        String name = cursor.getString(DBAdapter.COL_EventName);
-                        String daynum = cursor.getString(DBAdapter.COL_DayNum);
-                        String day = cursor.getString(DBAdapter.COL_Day);
-                        String month = cursor.getString(DBAdapter.COL_Month);
-                        String time = cursor.getString(DBAdapter.COL_Time);
-                        String year = cursor.getString(DBAdapter.COL_Year);
-
-                // Append data to the message:
-                Records += "id=" + id
-                        +", name=" + name
-                        +", daynum" + daynum
-                        +", day" + day
-                        +", month" + month
-                        +", time" + time
-                        +", year" + year
-                        +"\n";
-
-
-            } while(cursor.moveToNext());
-        }
-
-        // Close the cursor to avoid a resource leak.
-        cursor.close();
-
-
-        // [TO_DO_B7]
-        // Update the list view
-
-        // [TO_DO_B8]
-        // Display a Toast message
-    }
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -324,10 +274,10 @@ public class MainActivity extends AppCompatActivity {
             daynum = eventString.substring(daynumIndex, daynumIndex + 2);
             Log.i(TAG, "daynum is " + daynum);
 
-            year = eventString.substring((daynumIndex + 2), daynumIndex + 7);
+            year = eventString.substring((daynumIndex + 5), daynumIndex + 9);
             Log.i(TAG, "year is " + year);
 
-            time = eventString.substring(daynumIndex + 7);
+            time = eventString.substring(daynumIndex + 13);
             Log.i(TAG, "time is " + time);
         }catch (Exception ex){
             Log.i(TAG,"EXCEPTION "+ex.toString());

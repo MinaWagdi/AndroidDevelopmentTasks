@@ -5,34 +5,91 @@ import android.database.Cursor;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class Events extends AppCompatActivity {
 
     ArrayList<String> Records;
+
+    ArrayList<String>Name;
+    ArrayList<String>Day;
+    ArrayList<String>Date;
+    ArrayList<String>Year;
+    ArrayList<String>Time;
+
     int recordsArrayIndex=0;
     ListView events_list;
-    ListAdapter events_list_adapter;
+    ArrayAdapter events_list_adapter;
+//    CustomAdapter events_list_adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_events);
-
-        Intent intent = getIntent();
         Records=new ArrayList<String>();
 
-        events_list_adapter=new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1,Records);
-        events_list=findViewById(R.id.events_list);
-        events_list.setAdapter(events_list_adapter);
-        SetRecordsArray();
-        //SetRecordsArray();
+        Intent intent = getIntent();
 
+
+        Name = new ArrayList<String>();
+        Day= new ArrayList<String>();
+        Date= new ArrayList<String>();
+        Year= new ArrayList<String>();
+        Time= new ArrayList<String>();
+
+
+        Log.i(MainActivity.TAG,"onCreate in Events0");
+        events_list_adapter=new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1,Records);
+        SetRecordsArray();
+        Log.i(MainActivity.TAG,"onCreate in Events1");
+//        events_list_adapter=new CustomAdapter(this, Name,Day,Date,Year,Time);
+//        SetRecordsArray();
+        events_list=(ListView) findViewById(R.id.events_list);
+        Log.i(MainActivity.TAG,"onCreate in Events2");
+        events_list.setAdapter(events_list_adapter);
+        Log.i(MainActivity.TAG,"onCreate in Events3");
+
+//        events_list.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+//            @Override
+//            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+//                MainActivity.myDb.deleteRow(id);
+//                return false;
+//            }
+//        });
+
+        events_list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                try {
+
+
+                    Log.i(MainActivity.TAG, "event should be deleted, id is :" + id);
+                    int ID_index = Records.get((int) id).indexOf(",");
+                    String ID = Records.get((int) id).substring(0, ID_index);
+                    Log.i(MainActivity.TAG, ID);
+                    MainActivity.myDb.deleteRow(Integer.parseInt(ID));
+                    Records.remove((int)id);
+                    events_list_adapter.notifyDataSetChanged();
+                    //events_list_adapter.notifyDataSetChanged();
+                    Log.i(MainActivity.TAG,"After updating");
+                }catch (Exception e){
+                    Log.i(MainActivity.TAG,"EXCEPTION"+e.toString());
+                }
+//                events_list_adapter.clear();
+//                events_list.setAdapter(events_list_adapter);
+//                events_list_adapter.notifyDataSetChanged();
+
+            }
+        });
 
 
     }
@@ -40,10 +97,10 @@ public class Events extends AppCompatActivity {
     public void SetRecordsArray(){
         Cursor cursor = MainActivity.myDb.getAllRows();
         displayRecordSet(cursor);
-        //records_view.setText(Records);
     }
 
     private void displayRecordSet(Cursor cursor) {
+
 
         // populate the message from the cursor
 
@@ -59,18 +116,28 @@ public class Events extends AppCompatActivity {
                 String month = cursor.getString(DBAdapter.COL_Month);
                 String time = cursor.getString(DBAdapter.COL_Time);
                 String year = cursor.getString(DBAdapter.COL_Year);
-                Log.i(MainActivity.TAG,"Passed");
+                Log.i(MainActivity.TAG,"Passed1");
 
                 // Append data to the message:
-                String r = "id=" + id
-                        +", name=" + name
-                        +", daynum" + daynum
-                        +", day" + day
-                        +", month" + month
-                        +", time" + time
-                        +", year" + year
+                String r = id
+                        +", " + name
+                        +", " + day
+                        +", " + month
+                        +", " + daynum
+                        +", " + year
+                        +", " + time
+
                         +"\n";
+
+                Name.add(recordsArrayIndex,name);
+                Day.add(recordsArrayIndex,day);
+                Date.add(recordsArrayIndex,month+" "+daynum);
+                Year.add(recordsArrayIndex,year);
+                Time.add(recordsArrayIndex,time);
+
+
                 Log.i(MainActivity.TAG,"Passed2");
+
                 Records.add(recordsArrayIndex,r);
                 Log.i(MainActivity.TAG,"Passed3");
                 // [TO_DO_B6]
@@ -82,11 +149,5 @@ public class Events extends AppCompatActivity {
         // Close the cursor to avoid a resource leak.
         cursor.close();
 
-
-        // [TO_DO_B7]
-        // Update the list view
-
-        // [TO_DO_B8]
-        // Display a Toast message
     }
 }
