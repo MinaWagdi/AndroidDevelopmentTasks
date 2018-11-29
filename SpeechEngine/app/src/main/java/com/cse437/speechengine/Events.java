@@ -20,6 +20,10 @@ public class Events extends AppCompatActivity {
 
     ArrayList<String> Records;
 
+    private static final long DOUBLE_CLICK_TIME_DELTA = 300;
+    long lastClickTime = 0;
+    int count=0;
+
     ArrayList<String>Name;
     ArrayList<String>Day;
     ArrayList<String>Date;
@@ -70,17 +74,30 @@ public class Events extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 try {
+                    long clickTime = System.currentTimeMillis();
+                    count++;
+                    if (clickTime - lastClickTime < DOUBLE_CLICK_TIME_DELTA && count==2){
+                        Log.i(MainActivity.TAG,"Double Tap");
+                        Log.i(MainActivity.TAG, "event should be deleted, id is :" + id);
+                        int ID_index = Records.get((int) id).indexOf(",");
+                        String ID = Records.get((int) id).substring(0, ID_index);
+                        Log.i(MainActivity.TAG, ID);
+                        MainActivity.myDb.deleteRow(Integer.parseInt(ID));
+                        Records.remove((int)id);
+                        events_list_adapter.notifyDataSetChanged();
+                        //events_list_adapter.notifyDataSetChanged();
+                        Log.i(MainActivity.TAG,"After updating");
 
-
-                    Log.i(MainActivity.TAG, "event should be deleted, id is :" + id);
-                    int ID_index = Records.get((int) id).indexOf(",");
-                    String ID = Records.get((int) id).substring(0, ID_index);
-                    Log.i(MainActivity.TAG, ID);
-                    MainActivity.myDb.deleteRow(Integer.parseInt(ID));
-                    Records.remove((int)id);
-                    events_list_adapter.notifyDataSetChanged();
-                    //events_list_adapter.notifyDataSetChanged();
-                    Log.i(MainActivity.TAG,"After updating");
+                        lastClickTime = 0;
+                        count=0;
+                    }
+                    else{
+                        Log.i(MainActivity.TAG,"Single Tap");
+                        lastClickTime = clickTime;
+                        if(count>2){
+                            count=1;
+                        }
+                    }
                 }catch (Exception e){
                     Log.i(MainActivity.TAG,"EXCEPTION"+e.toString());
                 }

@@ -102,7 +102,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void getSpeech(){
         Toast.makeText(this, "Please say the event name, then the day, Month, the day number, year, the time respectively", Toast.LENGTH_SHORT).show();
-        testText.setText("Startinggg :)) ");
+        //testText.setText("Startinggg :)) ");
         Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
         intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
         intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault());
