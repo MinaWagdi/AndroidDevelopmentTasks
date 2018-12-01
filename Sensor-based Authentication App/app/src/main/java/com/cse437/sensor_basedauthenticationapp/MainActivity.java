@@ -5,6 +5,8 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.nfc.Tag;
+import android.os.SystemClock;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -18,12 +20,21 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     private SensorManager sensorManager;
     Sensor accelerometer;
     TextView textView;
+    long curTime=0;
+    long lastUpdate=0;
+    float last_x=0;
+    float last_y=0;
+    float last_z=0;
+    int shake_count=0;
+    boolean PinDetected=false;
+    boolean shakeOccured=false;
 
-    private long mShakeTimestamp;
-    private int mShakeCount;
-    private static final float SHAKE_THRESHOLD_GRAVITY = 2.7F;
-    private static final int SHAKE_SLOP_TIME_MS = 500;
-    private static final int SHAKE_COUNT_RESET_TIME_MS = 3000;
+    private static final float SHAKE_THRESHOLD = 1300;
+    private static final float Shake_time_diff1 = 200;
+    private static final float Shake_time_diff2 = 950;
+
+
+    TextView progress_bar;
 
 
 
@@ -34,6 +45,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         setContentView(R.layout.activity_main);
 
         textView=findViewById(R.id.textView);
+        progress_bar=findViewById(R.id.progress_bar_text);
 
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         accelerometer=sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
@@ -42,80 +54,67 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
 
     }
+    protected void onPause() {
+        super.onPause();
+        sensorManager.unregisterListener(this);
+    }
+
+    protected void onResume() {
+        super.onResume();
+        sensorManager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_NORMAL);
+    }
 
     @Override
     public void onSensorChanged(SensorEvent event) {
-        Log.i(TAG,"Entered onSensorChanged");
 
         float x = event.values[0];
         float y = event.values[1];
         float z = event.values[2];
 
-        float gX = x / SensorManager.GRAVITY_EARTH;
-        float gY = y / SensorManager.GRAVITY_EARTH;
-        float gZ = z / SensorManager.GRAVITY_EARTH;
+        float speed = Math.abs(x + y + z - last_x - last_y - last_z) / 200*10000;
+        if(speed>SHAKE_THRESHOLD){
+            Log.i(TAG,"Shake detected");
 
-        Log.i(TAG,"X: "+x+" Y: "+y+" Z: "+z );
-        Log.i(TAG,"gX: "+gX+" gY: "+gY+" gZ: "+gZ );
+            curTime = System.currentTimeMillis();
+            long diff = curTime-lastUpdate;
 
-        double gForce = Math.sqrt(gX * gX + gY * gY + gZ * gZ);
+            Log.i(TAG,"diff between curTime and lastUpdate is "+diff);
 
+            if(diff<Shake_time_diff2 && diff>Shake_time_diff1){
+                if(shake_count<3){
+                    shake_count++;
+                    //Log.i(TAG,"shake counts is "+shake_count);
+                    //progress_bar.setText(shake_count+"    ");
+                }
 
-        if (gForce > SHAKE_THRESHOLD_GRAVITY) {
-            Log.i(TAG,"Entered if condition");
-            final long now = System.currentTimeMillis();
-            // ignore shake events too close to each other (500ms)
-            if (mShakeTimestamp + SHAKE_SLOP_TIME_MS > now) {
-                return;
+            }
+            //First shake
+            else{
+                shakeOccured=true;
+                shake_count= 1;
+                //Log.i(TAG,"shake_count"+shake_count);
+
+            }
+            lastUpdate=curTime;
+
+        }
+        else if(System.currentTimeMillis()-lastUpdate>Shake_time_diff2){
+            //pin detected
+            if(shakeOccured){
+                progress_bar.append("  "+shake_count);
+                Log.i(TAG,"shake_count"+shake_count);
+                shakeOccured=false;
             }
 
-            // reset the shake count after 3 seconds of no shakes
-            if (mShakeTimestamp + SHAKE_COUNT_RESET_TIME_MS < now) {
-                mShakeCount = 0;
-            }
-
-            mShakeTimestamp = now;
-            mShakeCount++;
-            textView.setText(""+mShakeCount);
 
         }
 
 
+        last_x=x;
+        last_y=y;
+        last_z=z;
+
     }
-//    @Override
-//    public void onSensorChanged(SensorEvent event) {
-//
-//        Log.i(TAG,"Entered onSensorChanged");
-//            long curTime = System.currentTimeMillis();
-//            // only allow one update every 100ms.
-//            long lastUpdate=0;
-//            if ((curTime - lastUpdate) > 100) {
-//                Log.i(TAG,"Entered if condition");
-//                long diffTime = (curTime - lastUpdate);
-//                lastUpdate = curTime;
-//
-//                float x = event.values[0];
-//                float y = event.values[1];
-//                float z = event.values[2];
-//
-//                Log.i(TAG,"X: "+x+" Y: "+y+" Z: "+z );
-//
-//
-//                float last_x=0;
-//                float last_y=0;
-//                float last_z=0;
-//                float speed = Math.abs(x+y+z - last_x - last_y - last_z) / diffTime * 10000;
-//
-//                if (speed > 50) {
-//                    Log.i(TAG,"Speed is "+speed);
-//
-//                    Toast.makeText(this, "shake detected w/ speed: " + speed, Toast.LENGTH_SHORT).show();
-//                }
-//                last_x = x;
-//                last_y = y;
-//                last_z = z;
-//            }
-//    }
 
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
