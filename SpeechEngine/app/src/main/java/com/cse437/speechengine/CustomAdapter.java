@@ -44,7 +44,14 @@ public class CustomAdapter extends ArrayAdapter{
 
 
     @Override
+    public int getCount() {
+//        return super.getCount;
+        return Name.size();
+    }
+
+    @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+        Log.i(MainActivity.TAG,"entered getView metod");
         LayoutInflater inflater=context.getLayoutInflater();
         View rowView=inflater.inflate(R.layout.listview_row, null,true);
 

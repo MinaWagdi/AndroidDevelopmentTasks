@@ -6,10 +6,14 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.nfc.Tag;
+import android.os.Handler;
 import android.os.SystemClock;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -19,23 +23,34 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     private static String TAG="MINA";
     private SensorManager sensorManager;
     Sensor accelerometer;
-    TextView textView;
-    long curTime=0;
-    long lastUpdate=0;
+
     float last_x=0;
     float last_y=0;
     float last_z=0;
     int shake_count=0;
-    boolean PinDetected=false;
-    boolean shakeOccured=false;
 
-    private static final float SHAKE_THRESHOLD = 1300;
-    private static final float Shake_time_diff1 = 200;
-    private static final float Shake_time_diff2 = 950;
+    long BeginTime=0;
+    long curTime=0;
+    public static long TimeDiff = 0;
 
+    int[] pin={1,2,3};
+    int pin_index=0;
+    public static int time_frame = 5000;
+    public static boolean ErrorRisen=false;
+    public static boolean PinAuthenticated = false;
+    public static boolean StopThread=false;
+
+
+    private static final float SHAKE_THRESHOLD = 2.55f;
 
     TextView progress_bar;
+    public static Handler handler = new Handler();
+    public static ProgressBar pb;
 
+    Button StartBtn;
+    Button ResetBtn;
+
+    ProgressBarThread pb_thread;
 
 
 
@@ -43,14 +58,46 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        Log.i(TAG,"onCreate");
 
-        textView=findViewById(R.id.textView);
         progress_bar=findViewById(R.id.progress_bar_text);
+        pb = findViewById(R.id.progressBar);
+        pb.setMax(time_frame);
 
-        sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
-        accelerometer=sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-        sensorManager.registerListener(MainActivity.this,accelerometer,SensorManager.SENSOR_DELAY_NORMAL);
-        Log.i(TAG,"Entered onCreate");
+        StartBtn=findViewById(R.id.button);
+        ResetBtn=findViewById(R.id.button2);
+
+        StartBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                BeginTime=System.currentTimeMillis();
+                curTime = System.currentTimeMillis();
+                StopThread=false;
+
+                sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+                accelerometer=sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+                sensorManager.registerListener(MainActivity.this,accelerometer,SensorManager.SENSOR_DELAY_NORMAL);
+                Log.i(TAG,"Sensor Registered");
+
+                pb_thread=new ProgressBarThread();
+                pb_thread.start();
+            }
+        });
+
+        ResetBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                sensorManager.unregisterListener(MainActivity.this,accelerometer);
+                shake_count=0;
+                PinAuthenticated=false;
+                ErrorRisen=false;
+                pin_index=0;
+                progress_bar.setText("");
+                StopThread=true;
+
+                pb.setProgress(0);
+            }
+        });
 
 
     }
@@ -61,7 +108,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
     protected void onResume() {
         super.onResume();
-        sensorManager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_NORMAL);
     }
 
     @Override
@@ -71,44 +117,49 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         float y = event.values[1];
         float z = event.values[2];
 
+        float gX = x / SensorManager.GRAVITY_EARTH;
+        float gY = y / SensorManager.GRAVITY_EARTH;
+        float gZ = z / SensorManager.GRAVITY_EARTH;
+
+        // gForce will be close to 1 when there is no movement.
+        float gForce = (float)Math.sqrt(gX * gX + gY * gY + gZ * gZ);
+
         float speed = Math.abs(x + y + z - last_x - last_y - last_z) / 200*10000;
-        if(speed>SHAKE_THRESHOLD){
-            Log.i(TAG,"Shake detected");
+        curTime=System.currentTimeMillis();
+        TimeDiff=curTime-BeginTime;
 
-            curTime = System.currentTimeMillis();
-            long diff = curTime-lastUpdate;
-
-            Log.i(TAG,"diff between curTime and lastUpdate is "+diff);
-
-            if(diff<Shake_time_diff2 && diff>Shake_time_diff1){
-                if(shake_count<3){
+        //if Lesa el SmallTimeFrame ma5lessh
+        if( PinAuthenticated==false && ErrorRisen==false) {
+            if (TimeDiff < time_frame) {
+                if (gForce > SHAKE_THRESHOLD) {
                     shake_count++;
-                    //Log.i(TAG,"shake counts is "+shake_count);
-                    //progress_bar.setText(shake_count+"    ");
+                    progress_bar.append(" " + shake_count);
+                    if (shake_count > pin[pin_index]) {
+                        progress_bar.append(" Error ");
+                        ErrorRisen = true;
+                    }
                 }
+            }
+            //hena ya3ni el timeframe el so3'ayar 5eles wel shakes mazboota laken el BigTimeFrame ma5lessh
+            else if (shake_count == pin[pin_index] && pin_index < pin.length - 1) {
+                progress_bar.append(" - ");
+                shake_count = 0;
+                pin_index++;
+                BeginTime = System.currentTimeMillis();
+                curTime = System.currentTimeMillis();
+                Log.i(TAG, "pin index incremented");
 
             }
-            //First shake
-            else{
-                shakeOccured=true;
-                shake_count= 1;
-                //Log.i(TAG,"shake_count"+shake_count);
+            //hena el timeframe el kebiir 5eles wel shakes mazboota
+            else if (pin_index == (pin.length - 1) && shake_count == pin[pin_index]) {
+                progress_bar.append(" Finished ");
+                PinAuthenticated = true;
+            } else {
+                progress_bar.append(" ERROR ");
+                ErrorRisen = true;
 
             }
-            lastUpdate=curTime;
-
         }
-        else if(System.currentTimeMillis()-lastUpdate>Shake_time_diff2){
-            //pin detected
-            if(shakeOccured){
-                progress_bar.append("  "+shake_count);
-                Log.i(TAG,"shake_count"+shake_count);
-                shakeOccured=false;
-            }
-
-
-        }
-
 
         last_x=x;
         last_y=y;
